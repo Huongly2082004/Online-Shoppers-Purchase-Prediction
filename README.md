@@ -2,177 +2,261 @@
 
 ## 1. Giới thiệu đề tài
 
-Đề tài xây dựng mô hình dự đoán khả năng mua hàng của một phiên truy cập trong môi trường thương mại điện tử dựa trên các đặc trưng hành vi của phiên truy cập.
+Đề tài xây dựng hệ thống dự đoán khả năng mua hàng của khách hàng trong môi trường thương mại điện tử dựa trên dữ liệu hành vi của các phiên truy cập website.
 
-Hệ thống sử dụng dữ liệu hành vi truy cập website để dự đoán liệu phiên truy cập đó có dẫn đến hành động mua hàng hay không.
+Mỗi bản ghi trong bộ dữ liệu tương ứng với một phiên truy cập của khách hàng. Mục tiêu là sử dụng các đặc trưng hành vi và thông tin của phiên truy cập để dự đoán phiên đó có phát sinh mua hàng hay không.
 
-Các mô hình được sử dụng gồm:
-- Logistic Regression
-- Decision Tree
-- Random Forest
+---
 
-Ngoài kết quả dự đoán, đề tài sử dụng SHAP để giải thích các đặc trưng có ảnh hưởng đến kết quả dự đoán của từng phiên truy cập.
+## 2. Dataset
 
-## 2. Mục tiêu
+### 2.1. Thông tin bộ dữ liệu
 
-- Tiền xử lý và chuẩn hóa dữ liệu hành vi của các phiên truy cập.
-- Xây dựng các mô hình dự đoán khả năng mua hàng.
-- So sánh hiệu quả giữa các mô hình.
-- Xác định ngưỡng quyết định phù hợp thay vì chỉ sử dụng ngưỡng mặc định 0.5.
-- Sử dụng các chỉ số ROC-AUC, F1-score, Precision và Recall để đánh giá mô hình.
-- Sử dụng SHAP để giải thích kết quả dự đoán.
-- Xác định các đặc trưng hành vi có ảnh hưởng lớn đến khả năng mua hàng.
+- Tên bộ dữ liệu: Online Shoppers Purchasing Intention Dataset
+- Nguồn dữ liệu: UCI Machine Learning Repository
+- DOI: 10.24432/C5F88Q
+- Đơn vị quan sát: Một phiên truy cập website
+- Biến mục tiêu: Revenue
 
-## 3. Dataset
+Dữ liệu ban đầu gồm:
 
-Đề tài sử dụng bộ dữ liệu Online Shoppers Purchasing Intention Dataset.
+- 12.330 phiên truy cập
+- 18 cột
+- 17 đặc trưng đầu vào
+- 1 biến mục tiêu là `Revenue`
 
-Dữ liệu mô tả hành vi của các phiên truy cập trên website thương mại điện tử. Mỗi dòng dữ liệu tương ứng với một phiên truy cập, trong đó các đặc trưng thể hiện hành vi và thông tin của phiên truy cập.
+### 2.2. Biến mục tiêu
 
-Biến mục tiêu:
+Biến `Revenue` cho biết phiên truy cập có phát sinh mua hàng hay không.
 
-- Revenue: cho biết phiên truy cập có phát sinh mua hàng hay không.
+- `False`: Không phát sinh mua hàng
+- `True`: Có phát sinh mua hàng
 
-Các đặc trưng chính gồm:
+Phân bố biến mục tiêu:
 
-- Administrative
-- Administrative_Duration
-- Informational
-- Informational_Duration
-- ProductRelated
-- ProductRelated_Duration
-- BounceRates
-- ExitRates
-- PageValues
-- SpecialDay
-- Month
-- OperatingSystems
-- Browser
-- Region
-- TrafficType
-- VisitorType
-- Weekend
+| Revenue | Số lượng phiên | Tỷ lệ (%) |
+|---|---:|---:|
+| False | 10.297 | 84,37 |
+| True | 1.908 | 15,63 |
 
-## 4. Tiền xử lý dữ liệu
+Dữ liệu có sự mất cân bằng giữa hai lớp. Vì vậy, khi xây dựng và đánh giá mô hình, không chỉ sử dụng Accuracy mà cần xem xét thêm các chỉ số phù hợp với dữ liệu mất cân bằng.
 
-Quá trình tiền xử lý gồm:
+---
 
-1. Kiểm tra dữ liệu ban đầu.
-2. Kiểm tra và xử lý các bản ghi trùng lặp.
-3. Kiểm tra kiểu dữ liệu của các đặc trưng.
-4. Phân chia dữ liệu thành tập Train, Validation và Test.
-5. Mã hóa các biến phân loại.
-6. Chuẩn bị dữ liệu đầu vào cho các mô hình.
-7. Sử dụng seed cố định để đảm bảo khả năng tái lập kết quả.
+## 3. Các đặc trưng của dữ liệu
 
-Sau khi mã hóa, dữ liệu có 28 đặc trưng.
+Các đặc trưng trong bộ dữ liệu gồm:
 
-Kích thước dữ liệu:
+- `Administrative`
+- `Administrative_Duration`
+- `Informational`
+- `Informational_Duration`
+- `ProductRelated`
+- `ProductRelated_Duration`
+- `BounceRates`
+- `ExitRates`
+- `PageValues`
+- `SpecialDay`
+- `Month`
+- `OperatingSystems`
+- `Browser`
+- `Region`
+- `TrafficType`
+- `VisitorType`
+- `Weekend`
 
-- Train: 7323 × 28
-- Validation: 2441 × 28
-- Test: 2441 × 28
+Trong đó:
 
-## 5. Mô hình
+- Các đặc trưng `Administrative`, `Informational`, `ProductRelated` thể hiện số lượng trang thuộc các nhóm nội dung mà khách hàng truy cập.
+- Các đặc trưng có hậu tố `_Duration` thể hiện thời gian truy cập tương ứng.
+- `BounceRates` và `ExitRates` thể hiện các chỉ số liên quan đến hành vi rời khỏi website.
+- `PageValues` thể hiện giá trị trang trong phiên truy cập.
+- `Month`, `OperatingSystems`, `Browser`, `Region`, `TrafficType` và `VisitorType` cung cấp thông tin về thời điểm và đặc điểm của phiên truy cập.
+- `Weekend` cho biết phiên truy cập có diễn ra vào cuối tuần hay không.
 
-Đề tài xây dựng và so sánh 3 mô hình:
+---
 
-### Logistic Regression
+## 4. Kiểm tra và loại bỏ bản ghi trùng
 
-Mô hình hồi quy Logistic được sử dụng để dự đoán xác suất một phiên truy cập có khả năng mua hàng.
+Dữ liệu ban đầu được kiểm tra các bản ghi trùng lặp trước khi thực hiện các bước xử lý tiếp theo.
 
-### Decision Tree
+Kết quả kiểm tra:
 
-Mô hình cây quyết định được sử dụng để phân loại phiên truy cập dựa trên các đặc trưng hành vi.
+- Số dòng ban đầu: 12.330
+- Số bản ghi trùng: 125
+- Số dòng sau khi loại bỏ bản ghi trùng: 12.205
 
-### Random Forest
+Các bản ghi trùng được loại bỏ bằng phương thức `drop_duplicates()` của Pandas.
 
-Random Forest kết hợp nhiều cây quyết định nhằm cải thiện khả năng dự đoán và hạn chế hiện tượng quá khớp.
+Dữ liệu sau khi loại bỏ bản ghi trùng được lưu tại:
 
-## 6. Đánh giá mô hình
+`data/processed/online_shoppers_deduplicated.csv`
 
-Các chỉ số được sử dụng gồm:
+---
 
-- ROC-AUC
-- F1-score
-- Precision
-- Recall
-- Confusion Matrix
+## 5. Kiểm tra giá trị thiếu
 
-Do dữ liệu có sự mất cân bằng giữa các lớp, đề tài không chỉ dựa vào Accuracy mà sử dụng thêm F1-score, Precision và Recall để đánh giá.
+Sau khi loại bỏ bản ghi trùng, dữ liệu được kiểm tra giá trị thiếu.
 
-Ngưỡng quyết định được lựa chọn dựa trên F1-score trên tập Validation.
+Kết quả:
 
-Kết quả trên tập Test:
+- Tổng số giá trị thiếu: 0
+- Không có đặc trưng nào chứa giá trị thiếu.
 
-| Model | Threshold | ROC-AUC | F1 | Precision | Recall |
-|---|---:|---:|---:|---:|---:|
-| Logistic Regression | 0.5608 | 0.9171 | 0.6619 | 0.6034 | 0.7330 |
-| Decision Tree | 1.0000 | 0.7400 | 0.5624 | 0.5646 | 0.5602 |
-| Random Forest | 0.4100 | 0.9259 | 0.6640 | 0.6739 | 0.6545 |
+---
 
-Trong ba mô hình, Random Forest đạt ROC-AUC và F1-score cao nhất trong kết quả thử nghiệm.
+## 6. Thống kê mô tả
 
-## 7. Giải thích kết quả bằng SHAP
+Dữ liệu được thực hiện thống kê mô tả nhằm kiểm tra đặc điểm phân bố của các đặc trưng số.
 
-SHAP được sử dụng để giải thích mức độ đóng góp của từng đặc trưng vào kết quả dự đoán.
+Các thống kê được xem xét gồm:
 
-Một số đặc trưng có mức độ quan trọng cao gồm:
+- Số lượng quan sát
+- Giá trị trung bình
+- Độ lệch chuẩn
+- Giá trị nhỏ nhất
+- Phân vị 25%
+- Trung vị (50%)
+- Phân vị 75%
+- Giá trị lớn nhất
 
-- PageValues
-- ProductRelated_Duration
-- ExitRates
-- BounceRates
-- ProductRelated
-- Administrative_Duration
+Kết quả thống kê mô tả được lưu tại:
 
-Trong đó PageValues là đặc trưng có mức độ quan trọng cao nhất trong mô hình Random Forest.
+`results/descriptive_statistics.csv`
 
-SHAP cũng được sử dụng để giải thích kết quả dự đoán của từng phiên truy cập, giúp xác định đặc trưng nào làm tăng hoặc giảm khả năng mua hàng.
+---
 
-Ví dụ:
+## 7. Phân bố các biến phân loại
 
-- PageValues có SHAP dương → góp phần làm tăng khả năng mua hàng.
-- ExitRates có SHAP âm → góp phần làm giảm khả năng mua hàng.
-- BounceRates có SHAP âm → góp phần làm giảm khả năng mua hàng.
+### 7.1. Biến Month
 
-## 8. Demo dự đoán
+Phân bố số lượng phiên theo tháng:
 
-Hệ thống cho phép nhập thông tin của một phiên truy cập và sử dụng mô hình Random Forest để:
+| Month | Số lượng |
+|---|---:|
+| May | 3.329 |
+| Nov | 2.982 |
+| Mar | 1.860 |
+| Dec | 1.706 |
+| Oct | 549 |
+| Sep | 448 |
+| Aug | 433 |
+| Jul | 432 |
+| June | 285 |
+| Feb | 181 |
 
-1. Tính xác suất mua hàng.
-2. So sánh xác suất với ngưỡng quyết định.
-3. Đưa ra kết quả có khả năng mua hàng hoặc không có khả năng mua hàng.
-4. Hiển thị các đặc trưng đóng góp chính bằng SHAP.
+### 7.2. Biến VisitorType
 
-Ví dụ kết quả:
+Phân bố loại khách truy cập:
 
-============================================================
-        DEMO DỰ ĐOÁN KHẢ NĂNG MUA HÀNG
-============================================================
+| VisitorType | Số lượng |
+|---|---:|
+| Returning_Visitor | 10.431 |
+| New_Visitor | 1.693 |
+| Other | 81 |
 
-Xác suất mua hàng: 41.00%
-Ngưỡng quyết định: 0.41
-Kết quả: CÓ khả năng mua hàng
+---
 
-3 ĐẶC TRƯNG ĐÓNG GÓP CHÍNH:
+## 8. Mã hóa dữ liệu
 
-- numeric__PageValues: SHAP = 0.2562
-  → tăng khả năng mua hàng
+Các biến phân loại được mã hóa để chuyển đổi dữ liệu về dạng có thể sử dụng làm đầu vào cho các mô hình dự đoán.
 
-- numeric__ExitRates: SHAP = -0.1102
-  → giảm khả năng mua hàng
+Sau khi mã hóa:
 
-- numeric__BounceRates: SHAP = -0.0889
-  → giảm khả năng mua hàng
+- Kích thước dữ liệu: 12.205 × 29
+- Số đặc trưng đầu vào: 28
+- Biến mục tiêu: `Revenue`
 
-## 9. Cấu trúc thư mục
+Các đặc trưng đầu vào sau khi mã hóa gồm:
 
+- `Administrative`
+- `Administrative_Duration`
+- `Informational`
+- `Informational_Duration`
+- `ProductRelated`
+- `ProductRelated_Duration`
+- `BounceRates`
+- `ExitRates`
+- `PageValues`
+- `SpecialDay`
+- `OperatingSystems`
+- `Browser`
+- `Region`
+- `TrafficType`
+- `Weekend`
+- `Month_Aug`
+- `Month_Dec`
+- `Month_Feb`
+- `Month_Jul`
+- `Month_June`
+- `Month_Mar`
+- `Month_May`
+- `Month_Nov`
+- `Month_Oct`
+- `Month_Sep`
+- `VisitorType_New_Visitor`
+- `VisitorType_Other`
+- `VisitorType_Returning_Visitor`
+
+Dữ liệu sau xử lý được lưu tại:
+
+`data/processed/online_shoppers_processed.csv`
+
+---
+
+## 9. Chia dữ liệu
+
+Dữ liệu được chia thành ba tập Train, Validation và Test.
+
+| Tập dữ liệu | Số dòng | Số đặc trưng |
+|---|---:|---:|
+| Train | 7.323 | 28 |
+| Validation | 2.441 | 28 |
+| Test | 2.441 | 28 |
+
+Tỷ lệ phân bố biến mục tiêu được duy trì gần tương đương giữa ba tập.
+
+### Train
+
+- `False`: 84,36%
+- `True`: 15,64%
+
+### Validation
+
+- `False`: 84,39%
+- `True`: 15,61%
+
+### Test
+
+- `False`: 84,35%
+- `True`: 15,65%
+
+---
+
+## 10. Chuẩn hóa dữ liệu
+
+Các đặc trưng đầu vào được chuẩn hóa trước khi sử dụng cho các bước xây dựng mô hình.
+
+Kích thước dữ liệu sau chuẩn hóa:
+
+- Train: 7.323 × 28
+- Validation: 2.441 × 28
+- Test: 2.441 × 28
+
+---
+
+## 11. Cấu trúc thư mục
+
+```text
 Online-Shoppers-Purchase-Prediction/
 │
 ├── data/
 │   ├── raw/
+│   │   └── online_shoppers_intention.csv
+│   │
 │   └── processed/
+│       ├── online_shoppers_deduplicated.csv
+│       └── online_shoppers_processed.csv
 │
 ├── notebooks/
 │   └── 01_data_preparation.ipynb
@@ -180,30 +264,35 @@ Online-Shoppers-Purchase-Prediction/
 ├── src/
 │
 ├── results/
+│   └── descriptive_statistics.csv
 │
 ├── requirements.txt
 └── README.md
 
-## 10. Công nghệ sử dụng
+## 12. Sản phẩm bàn giao
 
-- Python
-- Pandas
-- Scikit-learn
-- SHAP
-- Joblib
-- Google Colab
-- GitHub
+Các sản phẩm của đề tài bao gồm:
 
-## 11. Kết quả
+- Dữ liệu gốc của bộ dữ liệu Online Shoppers Purchasing Intention Dataset.
+- Dữ liệu sau khi loại bỏ các bản ghi trùng lặp.
+- Số liệu thống kê mô tả của dữ liệu.
+- Notebook thực hiện quá trình tiền xử lý và phân tích dữ liệu.
+- Mã nguồn và cấu trúc thư mục của dự án được lưu trữ trên GitHub.
 
-Kết quả thử nghiệm cho thấy Random Forest là mô hình có hiệu quả tốt nhất trong ba mô hình được xây dựng.
+Các tệp dữ liệu chính:
 
-Các kết quả của Random Forest trên tập Test:
+- `data/raw/online_shoppers_intention.csv`: Dữ liệu gốc.
+- `data/processed/online_shoppers_deduplicated.csv`: Dữ liệu sau khi loại bỏ bản ghi trùng lặp.
+- `results/descriptive_statistics.csv`: Số liệu thống kê mô tả.
+- `notebooks/01_data_preparation.ipynb`: Notebook thực hiện quá trình chuẩn bị và phân tích dữ liệu.
 
-- ROC-AUC: 0.9259
-- F1-score: 0.6640
-- Precision: 0.6739
-- Recall: 0.6545
-- Ngưỡng quyết định: 0.41
+## 13. Hướng phát triển
 
-Mô hình Random Forest được lựa chọn để thực hiện phần demo dự đoán và giải thích kết quả bằng SHAP.
+Trong các giai đoạn tiếp theo, đề tài có thể được phát triển theo các hướng:
+
+- Tiếp tục tối ưu hóa các mô hình dự đoán khả năng mua hàng.
+- Thử nghiệm thêm các thuật toán phân loại khác để so sánh hiệu quả.
+- Cải thiện phương pháp lựa chọn ngưỡng quyết định phù hợp với mục tiêu dự đoán.
+- Phát triển phần giải thích kết quả dự đoán bằng SHAP trực quan hơn.
+- Xây dựng giao diện demo cho phép người dùng nhập thông tin của một phiên truy cập và nhận kết quả dự đoán.
+- Bổ sung các biểu đồ trực quan để hỗ trợ phân tích hành vi khách hàng.
