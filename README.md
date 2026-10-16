@@ -2,35 +2,37 @@
 
 ## 1. Giới thiệu đề tài
 
-Đề tài xây dựng hệ thống dự đoán khả năng mua hàng của khách hàng trong môi trường thương mại điện tử dựa trên dữ liệu hành vi của các phiên truy cập website.
+Đề tài xây dựng hệ thống dự đoán khả năng mua hàng của một phiên truy cập trong môi trường thương mại điện tử dựa trên dữ liệu hành vi của các phiên truy cập website.
 
-Mỗi bản ghi trong bộ dữ liệu tương ứng với một phiên truy cập của khách hàng. Mục tiêu là sử dụng các đặc trưng hành vi và thông tin của phiên truy cập để dự đoán phiên đó có phát sinh mua hàng hay không.
-
----
+Mỗi bản ghi trong bộ dữ liệu tương ứng với một phiên truy cập website. Mục tiêu là sử dụng các đặc trưng hành vi và thông tin của phiên truy cập để dự đoán phiên đó có phát sinh mua hàng hay không.
 
 ## 2. Dataset
 
 ### 2.1. Thông tin bộ dữ liệu
 
-- Tên bộ dữ liệu: Online Shoppers Purchasing Intention Dataset
-- Nguồn dữ liệu: UCI Machine Learning Repository
-- DOI: 10.24432/C5F88Q
-- Đơn vị quan sát: Một phiên truy cập website
-- Biến mục tiêu: Revenue
+Tên bộ dữ liệu: Online Shoppers Purchasing Intention Dataset
+
+Nguồn dữ liệu: UCI Machine Learning Repository
+
+DOI: 10.24432/C5F88Q
+
+Đơn vị quan sát: Một phiên truy cập website
+
+Biến mục tiêu: Revenue
 
 Dữ liệu ban đầu gồm:
 
 - 12.330 phiên truy cập
 - 18 cột
 - 17 đặc trưng đầu vào
-- 1 biến mục tiêu là `Revenue`
+- 1 biến mục tiêu là Revenue
 
 ### 2.2. Biến mục tiêu
 
-Biến `Revenue` cho biết phiên truy cập có phát sinh mua hàng hay không.
+Biến Revenue cho biết phiên truy cập có phát sinh mua hàng hay không.
 
-- `False`: Không phát sinh mua hàng
-- `True`: Có phát sinh mua hàng
+- False: Không phát sinh mua hàng
+- True: Có phát sinh mua hàng
 
 Phân bố biến mục tiêu:
 
@@ -41,40 +43,36 @@ Phân bố biến mục tiêu:
 
 Dữ liệu có sự mất cân bằng giữa hai lớp. Vì vậy, khi xây dựng và đánh giá mô hình, không chỉ sử dụng Accuracy mà cần xem xét thêm các chỉ số phù hợp với dữ liệu mất cân bằng.
 
----
-
 ## 3. Các đặc trưng của dữ liệu
 
 Các đặc trưng trong bộ dữ liệu gồm:
 
-- `Administrative`
-- `Administrative_Duration`
-- `Informational`
-- `Informational_Duration`
-- `ProductRelated`
-- `ProductRelated_Duration`
-- `BounceRates`
-- `ExitRates`
-- `PageValues`
-- `SpecialDay`
-- `Month`
-- `OperatingSystems`
-- `Browser`
-- `Region`
-- `TrafficType`
-- `VisitorType`
-- `Weekend`
+- Administrative
+- Administrative_Duration
+- Informational
+- Informational_Duration
+- ProductRelated
+- ProductRelated_Duration
+- BounceRates
+- ExitRates
+- PageValues
+- SpecialDay
+- Month
+- OperatingSystems
+- Browser
+- Region
+- TrafficType
+- VisitorType
+- Weekend
 
 Trong đó:
 
-- Các đặc trưng `Administrative`, `Informational`, `ProductRelated` thể hiện số lượng trang thuộc các nhóm nội dung mà khách hàng truy cập.
+- Các đặc trưng Administrative, Informational, ProductRelated thể hiện số lượng trang thuộc các nhóm nội dung mà phiên truy cập truy cập.
 - Các đặc trưng có hậu tố `_Duration` thể hiện thời gian truy cập tương ứng.
-- `BounceRates` và `ExitRates` thể hiện các chỉ số liên quan đến hành vi rời khỏi website.
-- `PageValues` thể hiện giá trị trang trong phiên truy cập.
-- `Month`, `OperatingSystems`, `Browser`, `Region`, `TrafficType` và `VisitorType` cung cấp thông tin về thời điểm và đặc điểm của phiên truy cập.
-- `Weekend` cho biết phiên truy cập có diễn ra vào cuối tuần hay không.
-
----
+- BounceRates và ExitRates thể hiện các chỉ số liên quan đến hành vi rời khỏi website.
+- PageValues thể hiện giá trị trang trong phiên truy cập.
+- Month, OperatingSystems, Browser, Region, TrafficType và VisitorType cung cấp thông tin về thời điểm và đặc điểm của phiên truy cập.
+- Weekend cho biết phiên truy cập có diễn ra vào cuối tuần hay không.
 
 ## 4. Kiểm tra và loại bỏ bản ghi trùng
 
@@ -92,8 +90,6 @@ Dữ liệu sau khi loại bỏ bản ghi trùng được lưu tại:
 
 `data/processed/online_shoppers_deduplicated.csv`
 
----
-
 ## 5. Kiểm tra giá trị thiếu
 
 Sau khi loại bỏ bản ghi trùng, dữ liệu được kiểm tra giá trị thiếu.
@@ -102,8 +98,6 @@ Kết quả:
 
 - Tổng số giá trị thiếu: 0
 - Không có đặc trưng nào chứa giá trị thiếu.
-
----
 
 ## 6. Thống kê mô tả
 
@@ -124,15 +118,13 @@ Kết quả thống kê mô tả được lưu tại:
 
 `results/descriptive_statistics.csv`
 
----
-
 ## 7. Phân bố các biến phân loại
 
 ### 7.1. Biến Month
 
-Phân bố số lượng phiên theo tháng:
+Phân bố số lượng phiên truy cập theo tháng:
 
-| Month | Số lượng |
+| Month | Số lượng phiên |
 |---|---:|
 | May | 3.329 |
 | Nov | 2.982 |
@@ -147,15 +139,13 @@ Phân bố số lượng phiên theo tháng:
 
 ### 7.2. Biến VisitorType
 
-Phân bố loại khách truy cập:
+Phân bố loại phiên truy cập:
 
-| VisitorType | Số lượng |
+| VisitorType | Số lượng phiên |
 |---|---:|
 | Returning_Visitor | 10.431 |
 | New_Visitor | 1.693 |
 | Other | 81 |
-
----
 
 ## 8. Mã hóa dữ liệu
 
@@ -165,44 +155,42 @@ Sau khi mã hóa:
 
 - Kích thước dữ liệu: 12.205 × 29
 - Số đặc trưng đầu vào: 28
-- Biến mục tiêu: `Revenue`
+- Biến mục tiêu: Revenue
 
 Các đặc trưng đầu vào sau khi mã hóa gồm:
 
-- `Administrative`
-- `Administrative_Duration`
-- `Informational`
-- `Informational_Duration`
-- `ProductRelated`
-- `ProductRelated_Duration`
-- `BounceRates`
-- `ExitRates`
-- `PageValues`
-- `SpecialDay`
-- `OperatingSystems`
-- `Browser`
-- `Region`
-- `TrafficType`
-- `Weekend`
-- `Month_Aug`
-- `Month_Dec`
-- `Month_Feb`
-- `Month_Jul`
-- `Month_June`
-- `Month_Mar`
-- `Month_May`
-- `Month_Nov`
-- `Month_Oct`
-- `Month_Sep`
-- `VisitorType_New_Visitor`
-- `VisitorType_Other`
-- `VisitorType_Returning_Visitor`
+- Administrative
+- Administrative_Duration
+- Informational
+- Informational_Duration
+- ProductRelated
+- ProductRelated_Duration
+- BounceRates
+- ExitRates
+- PageValues
+- SpecialDay
+- OperatingSystems
+- Browser
+- Region
+- TrafficType
+- Weekend
+- Month_Aug
+- Month_Dec
+- Month_Feb
+- Month_Jul
+- Month_June
+- Month_Mar
+- Month_May
+- Month_Nov
+- Month_Oct
+- Month_Sep
+- VisitorType_New_Visitor
+- VisitorType_Other
+- VisitorType_Returning_Visitor
 
 Dữ liệu sau xử lý được lưu tại:
 
 `data/processed/online_shoppers_processed.csv`
-
----
 
 ## 9. Chia dữ liệu
 
@@ -218,20 +206,18 @@ Tỷ lệ phân bố biến mục tiêu được duy trì gần tương đương
 
 ### Train
 
-- `False`: 84,36%
-- `True`: 15,64%
+- False: 84,36%
+- True: 15,64%
 
 ### Validation
 
-- `False`: 84,39%
-- `True`: 15,61%
+- False: 84,39%
+- True: 15,61%
 
 ### Test
 
-- `False`: 84,35%
-- `True`: 15,65%
-
----
+- False: 84,35%
+- True: 15,65%
 
 ## 10. Chuẩn hóa dữ liệu
 
@@ -243,11 +229,8 @@ Kích thước dữ liệu sau chuẩn hóa:
 - Validation: 2.441 × 28
 - Test: 2.441 × 28
 
----
-
 ## 11. Cấu trúc thư mục
 
-```text
 Online-Shoppers-Purchase-Prediction/
 │
 ├── data/
@@ -290,9 +273,9 @@ Các tệp dữ liệu chính:
 
 Trong các giai đoạn tiếp theo, đề tài có thể được phát triển theo các hướng:
 
-- Tiếp tục tối ưu hóa các mô hình dự đoán khả năng mua hàng.
+- Tiếp tục tối ưu hóa các mô hình dự đoán khả năng mua hàng của phiên truy cập.
 - Thử nghiệm thêm các thuật toán phân loại khác để so sánh hiệu quả.
 - Cải thiện phương pháp lựa chọn ngưỡng quyết định phù hợp với mục tiêu dự đoán.
 - Phát triển phần giải thích kết quả dự đoán bằng SHAP trực quan hơn.
-- Xây dựng giao diện demo cho phép người dùng nhập thông tin của một phiên truy cập và nhận kết quả dự đoán.
-- Bổ sung các biểu đồ trực quan để hỗ trợ phân tích hành vi khách hàng.
+- Xây dựng giao diện demo cho phép nhập thông tin của một phiên truy cập và nhận kết quả dự đoán.
+- Bổ sung các biểu đồ trực quan để hỗ trợ phân tích hành vi của các phiên truy cập.
