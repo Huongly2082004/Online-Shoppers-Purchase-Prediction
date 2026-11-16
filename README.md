@@ -279,3 +279,14 @@ Trong các giai đoạn tiếp theo, đề tài có thể được phát triển
 - Phát triển phần giải thích kết quả dự đoán bằng SHAP trực quan hơn.
 - Xây dựng giao diện demo cho phép nhập thông tin của một phiên truy cập và nhận kết quả dự đoán.
 - Bổ sung các biểu đồ trực quan để hỗ trợ phân tích hành vi của các phiên truy cập.
+
+
+## 14. Mô hình đã huấn luyện
+
+Các mô hình được lưu dưới định dạng Joblib:
+
+- Logistic Regression: `results/models/logistic_regression.joblib`
+- Decision Tree: `results/models/decision_tree.joblib`
+- Random Forest: [Tải mô hình Random Forest](https://drive.google.com/file/d/1cQjjonDG5onatrZSHDvs73g3ubJbTlpX/view?usp=sharing)
+
+**Lưu ý:** Mô hình Random Forest được lưu trữ trên Google Drive do dung lượng tệp lớn.
