@@ -280,7 +280,6 @@ Trong các giai đoạn tiếp theo, đề tài có thể được phát triển
 - Xây dựng giao diện demo cho phép nhập thông tin của một phiên truy cập và nhận kết quả dự đoán.
 - Bổ sung các biểu đồ trực quan để hỗ trợ phân tích hành vi của các phiên truy cập.
 
-
 ## 14. Mô hình đã huấn luyện
 
 Các mô hình được lưu dưới định dạng Joblib:
@@ -290,3 +289,19 @@ Các mô hình được lưu dưới định dạng Joblib:
 - Random Forest: [Tải mô hình Random Forest](https://drive.google.com/file/d/1cQjjonDG5onatrZSHDvs73g3ubJbTlpX/view?usp=sharing)
 
 **Lưu ý:** Mô hình Random Forest được lưu trữ trên Google Drive do dung lượng tệp lớn.
+
+## 15. Kết quả huấn luyện và đánh giá mô hình
+
+Các kết quả thực nghiệm trong giai đoạn tuần 5–7 được lưu tại thư mục `results/`:
+
+| Tệp | Nội dung |
+|---|---|
+| `initial_model_results.csv` | Kết quả đánh giá ban đầu của các mô hình |
+| `hyperparameter_tuning.csv` | Kết quả tìm kiếm siêu tham số |
+| `optimal_thresholds.csv` | Ngưỡng quyết định tối ưu trên tập Validation |
+| `test_metrics.csv` | Các chỉ số đánh giá trên tập Test |
+| `experiments.csv` | Nhật ký thực nghiệm của các mô hình |
+| `feature_importance.csv` | Mức độ quan trọng của các đặc trưng |
+| `shap_top3_explanations.csv` | Giải thích 3 đặc trưng đóng góp chính cho từng phiên truy cập |
+
+Các biểu đồ đánh giá và giải thích mô hình được lưu trong `results/figures/`, bao gồm ma trận nhầm lẫn, đường Precision–Recall, Feature Importance và SHAP Summary Plot.
